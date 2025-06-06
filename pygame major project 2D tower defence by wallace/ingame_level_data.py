@@ -1,3 +1,10 @@
+"""Runtime storage for in-game objects and global state.
+
+This module exposes sprite groups and other variables that are mutated
+throughout a level.  It acts as a single place to store temporary
+information while the game is running.
+"""
+
 import pygame
 
 # list for enemies spawned and are still on the screen

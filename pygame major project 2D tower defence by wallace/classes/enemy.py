@@ -1,3 +1,5 @@
+"""Enemy implementations for the tower defence game."""
+
 import pygame
 import config
 from pygame.math import Vector2
@@ -15,7 +17,9 @@ enemy_health_font = pygame.font.SysFont(config.Initialise["enemy_health_font"][0
 
 # use the defined sprite class for its functions
 class Enemy(pygame.sprite.Sprite):
+    """Base enemy class."""
     def __init__(self, enemy_type, level, spawn_time):
+        """Create an enemy instance for a level."""
         pygame.sprite.Sprite.__init__(self)
 
         # get defined data from input
@@ -58,17 +62,22 @@ class Enemy(pygame.sprite.Sprite):
 
     # show health of enemy, logically belongs to the enemy class
     def show_health(self, health: int, location: Vector2):
+        """Display inverted health comparison."""
+        """Show the health with a random comparison number."""
+        """Render the enemy's health value."""
         global enemy_health_font
         show_health = enemy_health_font.render(f"{round(health)}", True, (255, 255, 0))
         screen.blit(show_health, location)
 
 
     def death(self):
+        """Handle enemy death and award bounty."""
         ingame_level_data.Ingame_data["current_player_currency"] += self.bounty
         self.kill()
 
 
     def move(self):
+        """Advance the enemy along its path."""
         # modification of global variable needed
         global player_health
         # check if there is still checkpoints to go
@@ -101,6 +110,10 @@ class Enemy(pygame.sprite.Sprite):
 #            print('-' , self.health)  #  show health when finish path
 
     def resize(self, resize_factor: float):
+        """Resize ant_s specific data."""
+        """Resize ant_g specific data."""
+        """Resize snake specific data."""
+        """Resize enemy sprite and update movement values."""
         self.image = pygame.transform.scale_by(self.original_image, resize_factor)
 
         self.chekcpoints = ingame_level_data.Ingame_data["checkpoints"]
@@ -120,14 +133,19 @@ class Enemy(pygame.sprite.Sprite):
         enemy_health_font = pygame.font.SysFont(config.Initialise["enemy_health_font"][0], round(config.Initialise["enemy_health_font"][1] * resize_factor), config.Initialise["enemy_health_font"][2], config.Initialise["enemy_health_font"][3])
 
     def knockback(self, knockback_value: int, knock_back_origin: Vector2):
+        """Apply knockback effect."""
         knockback_range = (knockback_value - min(self.knockback_resistance, knockback_value)) * pygame.math.Vector2.normalize(self.location - knock_back_origin)
         self.location += knockback_range
         self.knockback_resistance = min(knockback_value - self.knockback_minimum, self.knockback_resistance * self.knockback_resistance_growth_value)
 
 
 class Snake(Enemy):
+    """Enemy that displays its health above."""
     # equal sign
     def __init__(self, level, spawn_time):
+        """Create an Ant_s enemy."""
+        """Create an Ant_g enemy."""
+        """Create a Snake enemy."""
         Enemy.__init__(self, "snake", level, spawn_time)
         self.original_message_align = 5
 
@@ -159,6 +177,7 @@ class Snake(Enemy):
 
 
 class Ant_g(Enemy):
+    """Enemy that requires health to be greater than a number."""
     # greater than
     def __init__(self, level, spawn_time):
         Enemy.__init__(self, "ant_g", level, spawn_time)
@@ -208,6 +227,7 @@ class Ant_g(Enemy):
 
 
 class Ant_s(Enemy):
+    """Enemy whose apparent health is reduced."""
     # smaller than
     def __init__(self, level, spawn_time):
         Enemy.__init__(self, "ant_s", level, spawn_time)
@@ -256,3 +276,4 @@ class Ant_s(Enemy):
         health_message_align = enemy_health_font.render(str(self.randint), True, (255, 255, 0))
         # +13 in consideration of the length of the ">" symbol
         self.message_width_half: float = health_message_align.get_rect()[2] + 13 * resize_factor
+

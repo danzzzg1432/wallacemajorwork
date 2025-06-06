@@ -1,4 +1,12 @@
+"""Static configuration values for the tower defence game.
+
+This module initialises Pygame and exposes dictionaries that describe
+initial game constants, level presets and tower presets.  All other
+modules import from here so that these values remain centralised.
+"""
+
 import pygame
+
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.fadeout(1)
@@ -266,6 +274,6 @@ Tower_preset = {
         "details" : ["This tower shoots a growing curve knocking back enemies. This is also how parabola", " graphs looks like - also a curve curving at a linear rate. The equation would be y = Ax^2", " or Ay^2 = x, where ^2 means to the power of two. Be aware that you will only learn", " about parabolas facing verticly and horizontally in high school."],
         "price" : 50,
         "image" : Initialise["tower_parabolaIMG"],
-        "range" : 230,
+    "range" : 230,
     }
 }
