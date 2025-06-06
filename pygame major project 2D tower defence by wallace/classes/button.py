@@ -1,3 +1,5 @@
+"""UI button and shop item classes."""
+
 import pygame
 import config
 import ingame_level_data
@@ -9,8 +11,10 @@ queryIMG = config.Initialise["queryIMG"]
 
 
 # use the defined sprite class for its functions
-class Button():
-    def __init__(self, position_in_list : int, level: int):
+class Button:
+    """Generic clickable button."""
+    def __init__(self, position_in_list: int, level: int):
+        """Initialise the button from level presets."""
         # get defined data from input
         ##################################################################################
         self.position_in_list = position_in_list # position in the preset list, starting from 0
@@ -27,9 +31,13 @@ class Button():
         return f"{self.x, self.y, self.rect[2], self.rect[3]}"
 
     def draw(self):
+        """Draw the item and its UI elements."""
+        """Placeholder method for drawing."""
+        """Blit the button image onto the screen."""
         screen.blit(self.image, (self.x, self.y))
 
     def resize(self, resize_factor: float):
+        """Scale the button when the window size changes."""
         self.image = pygame.transform.scale_by(self.original_image, resize_factor)
         self.rect = self.image.get_rect()
         self.x = config.Level_preset[self.level][self.storage][self.position_in_list][1][0] * resize_factor
@@ -37,6 +45,9 @@ class Button():
 
 
     def check_press(self, mouse_pos):
+        """Check if the item or its query icon was clicked."""
+        """Return True if the mouse is within this rectangle."""
+        """Return True if ``mouse_pos`` is inside this button."""
         # check if pressed on this item
         if self.x <= mouse_pos[0] <= (self.x + self.rect[2]) and self.y <= mouse_pos[1] <= (self.y + self.rect[3]):
             return True
@@ -45,7 +56,9 @@ class Button():
 
 # button that is not drawn every tick, stored in another list
 class Dialogue(Button):
-    def __init__(self, position_in_list : int, level: int):
+    """Button that is only shown as part of a dialogue."""
+    def __init__(self, position_in_list: int, level: int):
+        """Initialise the dialogue image."""
         super().__init__(position_in_list, level)
         # get defined data from input
         ##################################################################################
@@ -61,8 +74,10 @@ class Dialogue(Button):
 
 
 # button without the image
-class Rect():
-    def __init__(self, position_in_list : int, level: int):
+class Rect:
+    """Invisible clickable area."""
+    def __init__(self, position_in_list: int, level: int):
+        """Create a rectangle from level preset."""
         # get defined data from input
         ##################################################################################
         self.position_in_list = position_in_list # position in the preset list, starting from 0
@@ -73,6 +88,8 @@ class Rect():
         self.resize(ingame_level_data.Ingame_data["resize_factor"])
 
     def resize(self, resize_factor):
+        """Resize all UI elements for the item."""
+        """Resize the rectangle when the window changes."""
         self.rect = [i * resize_factor for i in self.original_rect]
         self.x = self.rect[0]
         self.y = self.rect[1]
@@ -91,8 +108,10 @@ class Rect():
 
 
 # button but with more capabilities
-class Shop_item():
-    def __init__(self, position_in_list : int, level: int):
+class Shop_item:
+    """Item displayed in the shop UI."""
+    def __init__(self, position_in_list: int, level: int):
+        """Initialise item data from presets."""
         # get defined data from input
         ##################################################################################
         self.position_in_list = position_in_list # position in the preset list, starting from 0
@@ -183,6 +202,7 @@ class Shop_item():
         self.show_query_return = self.big_font.render('click again to resume', True, (255, 255, 255))
 
     def query(self):
+        """Display an information overlay for this item."""
         query = True
         while query == True:
             # boarder
@@ -216,3 +236,4 @@ class Shop_item():
                 return False
             return True
         else: return False
+

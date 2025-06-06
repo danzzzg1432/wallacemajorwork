@@ -1,3 +1,5 @@
+"""Tower classes and their attack behaviour."""
+
 import pygame
 from pygame import Vector2
 import config
@@ -19,8 +21,10 @@ Parabola_attack = classes.attack.Parabola_attack
 
 
 class Tower(pygame.sprite.Sprite):
+    """Base class for all towers."""
     #  these init values will be obtained from the config file
     def __init__(self, tower_type, level, location: Vector2):
+        """Initialise common tower data."""
         pygame.sprite.Sprite.__init__(self)
         self.tower_type = tower_type
         # in format of "levelx"
@@ -43,6 +47,7 @@ class Tower(pygame.sprite.Sprite):
         self.cooldown = 0
 
     def aim(self):
+        """Determine which enemy to target."""
         # get list from the file once and for all for this aim
         Enemy_list = ingame_level_data.Ingame_data["Enemy_list"]
 
@@ -77,9 +82,11 @@ class Tower(pygame.sprite.Sprite):
                     self.targeted_enemy = None
 
     def shoot(self):
+        """Fire an attack sprite."""
         pass
 
     def resize(self, resize_factor: float):
+        """Scale the tower and update its range."""
         global player_font
         player_font = pygame.font.SysFont(config.Initialise["player_font"][0], round(config.Initialise["player_font"][1] * resize_factor), config.Initialise["player_font"][2], config.Initialise["player_font"][3])
 
@@ -92,6 +99,7 @@ class Tower(pygame.sprite.Sprite):
 
 
     def check_press(self, mouse_pos: Vector2):
+        """Return True if this tower was clicked."""
         # check if pressed on this item
         # self.location is the center of towers
         self.x = self.location[0]
@@ -113,6 +121,7 @@ class Tower(pygame.sprite.Sprite):
         else: return False
 
 class Linear(Tower):
+    """Tower that fires a penetrating straight line."""
     def __init__(self, tower_type, level, location: Vector2):
         super().__init__(tower_type, level, location)
         self.original_range = config.Tower_preset["Linear tower"]["range"]
@@ -123,6 +132,7 @@ class Linear(Tower):
 
 
 class Parabola(Tower):
+    """Tower that fires a curved knockback attack."""
     def __init__(self, tower_type, level, location: list):
         super().__init__(tower_type, level, location)
         self.image = tower_parabolaIMG
@@ -154,7 +164,8 @@ class Parabola(Tower):
         else: # in cooldown --> may not attack
             self.cooldown -= 1
 
-    def rotate(self, facing_location): # change facing vector, thus change angle
+    def rotate(self, facing_location):
+        """Change the direction this tower faces.""" # change facing vector, thus change angle
         self.facing_vector = self.location - pygame.math.Vector2(facing_location)
         self.angle = self.facing_vector.angle_to(self.attack_image_facing)
 
@@ -199,4 +210,4 @@ class Parabola(Tower):
         self.rect.center = self.location
         if self.original_range: self.range = self.original_range * resize_factor
         self.resize_factor = resize_factor
-        
+

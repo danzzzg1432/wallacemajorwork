@@ -1,3 +1,10 @@
+"""Attack implementations used by the towers.
+
+Each attack is a ``pygame.sprite.Sprite`` that deals damage to enemies
+and optionally applies knockback.  The classes here are spawned by the
+towers defined in :mod:`tower` and tick every frame until they expire.
+"""
+
 import pygame
 from pygame import Vector2
 import ingame_level_data
@@ -21,8 +28,11 @@ def sgn(angle):
 """
 
 class Attacks(pygame.sprite.Sprite):
+    """Base class for all projectile attacks."""
+
     def __init__(self, resize_factor: float, location: Vector2):
-        pygame.sprite.Sprite.__init__(self)
+        """Create a generic attack sprite at ``location``."""
+        super().__init__()
         self.image = None
         self.rect = None
         self.hit_list = None
@@ -31,9 +41,11 @@ class Attacks(pygame.sprite.Sprite):
         self.location = location
 
     def tick(self):
+        """Update the attack for the current frame."""
         pass
 
     def resize(self, resize_factor: float):
+        """Scale the sprite when the screen is resized."""
         self.image = pygame.transform.scale_by(self.image, resize_factor)
         self.rect = self.image.get_rect()
         self.rect.center = self.location
@@ -41,8 +53,11 @@ class Attacks(pygame.sprite.Sprite):
 
 
 class Linear_attack(Attacks):
+    """Straight line attack used by the :class:`Linear` tower."""
+
     def __init__(self, resize_factor: float, direction: Vector2, location: Vector2):
-        Attacks.__init__(self, resize_factor, location)
+        """Create the linear projectile heading in ``direction``."""
+        super().__init__(resize_factor, location)
 
         self.direction = direction
 
@@ -65,6 +80,7 @@ class Linear_attack(Attacks):
         self.attack_damage_per_frame = self.attack_damage_per_second / fps
 
     def tick(self):
+        """Apply damage to any enemies intersecting the line."""
         # get list from the file once and for all for this aim
         Enemy_list = ingame_level_data.Ingame_data["Enemy_list"]
         Enemy_dead_list = ingame_level_data.Ingame_data["Enemy_dead_list"]
@@ -89,8 +105,11 @@ class Linear_attack(Attacks):
 
 
 class Parabola_attack(Attacks):
+    """Curved attack with optional knockback."""
+
     def __init__(self, resize_factor: float, angle: float, location: Vector2, extension: float):
-        Attacks.__init__(self, resize_factor, location)
+        """Create a parabola shaped attack rotated by ``angle``."""
+        super().__init__(resize_factor, location)
         self.angle = angle
         self.knockback_value = 15
         self.attack_damage_per_second = parabola_dps
@@ -113,6 +132,7 @@ class Parabola_attack(Attacks):
         self.rect.center = (self.location[0] - self.x_shift, self.location[1] - self.y_shift )
 
     def tick(self):
+        """Deal damage and knock back enemies in its path."""
         # get list from the file once and for all for this aim
         Enemy_list = ingame_level_data.Ingame_data["Enemy_list"]
         Enemy_dead_list = ingame_level_data.Ingame_data["Enemy_dead_list"]
@@ -127,3 +147,4 @@ class Parabola_attack(Attacks):
                     Enemy_list.remove(enemy)
                     Enemy_dead_list.add(enemy)
         self.kill()
+

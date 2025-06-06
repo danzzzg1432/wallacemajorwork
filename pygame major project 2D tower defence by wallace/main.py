@@ -1,3 +1,10 @@
+"""Entry point and main game loop for the tower defence game.
+
+This module wires together the classes defined throughout the project and
+contains the runtime logic for each level.  It is intentionally a little
+long as it drives the UI and game state.
+"""
+
 # initialising
 import pygame
 import classes.enemy
